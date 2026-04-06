@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salary Comparison Budget Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F6F4F0;
+    --surface: #FFFFFF;
+    --surface-alt: #EDEAE4;
+    --text: #1A1A1A;
+    --text-muted: #6B6560;
+    --text-light: #9C958E;
+    --accent: #2D5A3D;
+    --accent-light: #E8F0EB;
+    --accent-dark: #1E3D29;
+    --danger: #B5342A;
+    --danger-light: #FCECEA;
+    --warning: #A8781A;
+    --warning-light: #FDF5E6;
+    --success: #2D7A4F;
+    --success-light: #E6F5ED;
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.14);
+    --radius: 10px;
+    --radius-lg: 14px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+    --shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: var(--accent-dark);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -60%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+  }
+  .header p {
+    opacity: 0.7;
+    font-size: 0.9rem;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 3rem;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1rem;
+  }
+
+  .salary-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .salary-card {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    cursor: default;
+    transition: border-color 0.2s;
+  }
+  .salary-card .label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+  .salary-card .salary-input-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .salary-card .dollar {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .salary-card input {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+    border: none;
+    background: transparent;
+    width: 100%;
+    outline: none;
+  }
+  .salary-card input:focus {
+    border-bottom: 2px solid var(--accent);
+  }
+  .salary-card .take-home {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+
+  .expense-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  @media (max-width: 600px) { .expense-grid { grid-template-columns: 1fr; } }
+
+  .expense-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius);
+    background: var(--surface-alt);
+    gap: 8px;
+  }
+  .expense-row .exp-name {
+    font-size: 0.85rem;
+    color: var(--text);
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .expense-row .exp-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .expense-row .exp-dollar {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .expense-row input {
+    width: 70px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    border: none;
+    background: transparent;
+    text-align: right;
+    outline: none;
+  }
+  .expense-row input:focus {
+    background: rgba(255,255,255,0.7);
+    border-radius: 4px;
+  }
+  .expense-row.strikethrough .exp-name,
+  .expense-row.strikethrough input {
+    text-decoration: line-through;
+    opacity: 0.45;
+  }
+
+  .add-expense-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius);
+    border: 1px dashed var(--accent);
+    background: transparent;
+    transition: background 0.15s;
+  }
+  .add-expense-btn:hover { background: var(--accent-light); }
+
+  .total-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius);
+    background: var(--text);
+    color: white;
+    margin-top: 0.75rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .comp-card {
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+  }
+  .comp-card.current { background: var(--accent-light); }
+  .comp-card.new { background: var(--warning-light); }
+  .comp-card .comp-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .comp-card.current .comp-label { color: var(--accent); }
+  .comp-card.new .comp-label { color: var(--warning); }
+  .comp-card .comp-value {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+  .comp-card .comp-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .positive { color: var(--success); }
+  .negative { color: var(--danger); }
+
+  .timeline-section { margin-bottom: 1.5rem; }
+  .timeline-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .timeline-item:last-child { border-bottom: none; }
+  .timeline-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .timeline-dot.green { background: var(--success); }
+  .timeline-dot.amber { background: var(--warning); }
+  .timeline-dot.red { background: var(--danger); }
+  .timeline-content .tl-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .timeline-content .tl-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .payout-card {
+    background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+    color: white;
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .payout-card .payout-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+    margin-bottom: 0.5rem;
+  }
+  .payout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .payout-item .pi-label {
+    font-size: 0.75rem;
+    opacity: 0.65;
+  }
+  .payout-item .pi-value {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .cc-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .cc-item {
+    background: var(--surface-alt);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+  }
+  .cc-item .cc-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .cc-item .cc-value {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .cc-item .cc-sub {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+
+  .verdict {
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-top: 1rem;
+  }
+  .verdict.feasible { background: var(--success-light); border: 1px solid rgba(45,122,79,0.2); }
+  .verdict.tight { background: var(--warning-light); border: 1px solid rgba(168,120,26,0.2); }
+  .verdict.risky { background: var(--danger-light); border: 1px solid rgba(181,52,42,0.2); }
+  .verdict .verdict-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+  .verdict .verdict-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  .footer-note {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-in { animation: fadeUp 0.4s ease both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+
+  /* PIN Lock Screen */
+  #pin-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--accent-dark);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  #pin-overlay.hidden { display: none; }
+  .pin-box {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    width: 320px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    text-align: center;
+  }
+  .pin-box .lock-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .pin-box h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.25rem;
+    margin-bottom: 0.35rem;
+    color: var(--text);
+  }
+  .pin-box .pin-sub {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
+  .pin-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+    height: 18px;
+  }
+  .pin-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--border-strong);
+    background: transparent;
+    transition: all 0.15s;
+  }
+  .pin-dot.filled {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .pin-dot.error {
+    background: var(--danger);
+    border-color: var(--danger);
+    animation: pinShake 0.4s ease;
+  }
+  @keyframes pinShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+  }
+  .pin-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    max-width: 240px;
+    margin: 0 auto;
+  }
+  .pin-key {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 14px 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.1s;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .pin-key:hover { background: var(--surface-alt); }
+  .pin-key:active { transform: scale(0.95); background: var(--accent-light); }
+  .pin-key.wide { grid-column: span 1; }
+  .pin-key.backspace {
+    font-size: 1rem;
+    color: var(--text-muted);
+  }
+  .pin-error-msg {
+    font-size: 0.8rem;
+    color: var(--danger);
+    margin-top: 0.75rem;
+    min-height: 1.2em;
+  }
+
+  .app-content.locked { display: none; }
+</style>
+</head>
+<body>
+
+<!-- PIN LOCK SCREEN -->
+<div id="pin-overlay">
+  <div class="pin-box">
+    <div class="lock-icon">&#128274;</div>
+    <h2>Enter PIN</h2>
+    <p class="pin-sub">Enter your access code to continue</p>
+    <div class="pin-dots" id="pin-dots"></div>
+    <div class="pin-keypad" id="pin-keypad">
+      <button class="pin-key" onclick="pinPress('1')">1</button>
+      <button class="pin-key" onclick="pinPress('2')">2</button>
+      <button class="pin-key" onclick="pinPress('3')">3</button>
+      <button class="pin-key" onclick="pinPress('4')">4</button>
+      <button class="pin-key" onclick="pinPress('5')">5</button>
+      <button class="pin-key" onclick="pinPress('6')">6</button>
+      <button class="pin-key" onclick="pinPress('7')">7</button>
+      <button class="pin-key" onclick="pinPress('8')">8</button>
+      <button class="pin-key" onclick="pinPress('9')">9</button>
+      <button class="pin-key backspace" onclick="pinBackspace()">&#9003;</button>
+      <button class="pin-key" onclick="pinPress('0')">0</button>
+      <button class="pin-key" onclick="pinSubmit()" style="background: var(--accent); color: white; border-color: var(--accent);">&#10003;</button>
+    </div>
+    <div class="pin-error-msg" id="pin-error"></div>
+  </div>
+</div>
+
+<script>
+const PIN_CODE = "1337206";
+let pinEntry = "";
+
+function renderDots() {
+  const container = document.getElementById("pin-dots");
+  container.innerHTML = "";
+  for (let i = 0; i < 7; i++) {
+    const dot = document.createElement("div");
+    dot.className = "pin-dot" + (i < pinEntry.length ? " filled" : "");
+    container.appendChild(dot);
+  }
+}
+
+function pinPress(num) {
+  if (pinEntry.length >= 7) return;
+  pinEntry += num;
+  document.getElementById("pin-error").textContent = "";
+  renderDots();
+  if (pinEntry.length === 7) {
+    setTimeout(pinSubmit, 200);
+  }
+}
+
+function pinBackspace() {
+  pinEntry = pinEntry.slice(0, -1);
+  document.getElementById("pin-error").textContent = "";
+  renderDots();
+}
+
+function pinSubmit() {
+  if (pinEntry === PIN_CODE) {
+    document.getElementById("pin-overlay").classList.add("hidden");
+    document.getElementById("app-content").classList.remove("locked");
+  } else {
+    document.getElementById("pin-error").textContent = "Incorrect PIN. Try again.";
+    const dots = document.querySelectorAll(".pin-dot");
+    dots.forEach(d => { d.classList.remove("filled"); d.classList.add("error"); });
+    setTimeout(() => {
+      pinEntry = "";
+      renderDots();
+    }, 500);
+  }
+}
+
+document.addEventListener("keydown", function(e) {
+  if (document.getElementById("pin-overlay").classList.contains("hidden")) return;
+  if (e.key >= "0" && e.key <= "9") pinPress(e.key);
+  else if (e.key === "Backspace") pinBackspace();
+  else if (e.key === "Enter") pinSubmit();
+});
+
+renderDots();
+</script>
+
+<!-- APP CONTENT (hidden until PIN entered) -->
+<div id="app-content" class="locked">
+
+<div class="header">
+  <h1>Budget calculator</h1>
+  <p>Salary comparison &mdash; $93k vs $75k</p>
+</div>
+
+<div class="container">
+
+  <!-- SALARY INPUTS -->
+  <div class="section-label animate-in">Household income</div>
+  <div class="salary-toggle animate-in delay-1">
+    <div class="salary-card">
+      <div class="label">Your salary (current)</div>
+      <div class="salary-input-row">
+        <span class="dollar">$</span>
+        <input type="number" id="salary-current" value="93000" onchange="recalc()">
+      </div>
+      <div class="take-home" id="take-home-current">Bi-weekly: $2,395</div>
+    </div>
+    <div class="salary-card">
+      <div class="label">Your salary (new)</div>
+      <div class="salary-input-row">
+        <span class="dollar">$</span>
+        <input type="number" id="salary-new" value="75000" onchange="recalc()">
+      </div>
+      <div class="take-home" id="take-home-new">Bi-weekly: ~$1,935</div>
+    </div>
+  </div>
+  <div class="salary-toggle animate-in delay-1" style="grid-template-columns: 1fr; max-width: 50%;">
+    <div class="salary-card">
+      <div class="label">Wife's bi-weekly take-home</div>
+      <div class="salary-input-row">
+        <span class="dollar">$</span>
+        <input type="number" id="wife-biweekly" value="1738" onchange="recalc()">
+      </div>
+      <div class="take-home" id="wife-monthly"></div>
+    </div>
+  </div>
+
+  <!-- EXPENSES -->
+  <div class="section-label animate-in delay-2">Monthly expenses</div>
+  <div class="card animate-in delay-2">
+    <div class="expense-grid" id="expense-grid"></div>
+    <button class="add-expense-btn" onclick="addExpense()">+ Add expense</button>
+    <div class="total-bar">
+      <span>Total monthly expenses</span>
+      <span id="total-expenses">$0</span>
+    </div>
+  </div>
+
+  <!-- COMPARISON -->
+  <div class="section-label animate-in delay-3">Monthly leftover (income − expenses)</div>
+  <div class="comparison-grid animate-in delay-3">
+    <div class="comp-card current">
+      <div class="comp-label">At current salary</div>
+      <div class="comp-value" id="leftover-current"></div>
+      <div class="comp-sub" id="leftover-current-sub"></div>
+    </div>
+    <div class="comp-card new">
+      <div class="comp-label">At new salary</div>
+      <div class="comp-value" id="leftover-new"></div>
+      <div class="comp-sub" id="leftover-new-sub"></div>
+    </div>
+  </div>
+
+  <!-- PTO + BONUS PAYOUT -->
+  <div class="section-label animate-in delay-3">PTO + bonus payout</div>
+  <div class="payout-card animate-in delay-3">
+    <div class="payout-title">Estimated after-tax payout</div>
+    <div class="payout-grid">
+      <div class="payout-item">
+        <div class="pi-label">PTO (120 hrs)</div>
+        <div class="pi-value" id="pto-net"></div>
+      </div>
+      <div class="payout-item">
+        <div class="pi-label">Bonus</div>
+        <div class="pi-value" id="bonus-net"></div>
+      </div>
+      <div class="payout-item">
+        <div class="pi-label">Total net payout</div>
+        <div class="pi-value" id="payout-total"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREDIT CARDS -->
+  <div class="section-label animate-in delay-4">Credit card payoff plan</div>
+  <div class="card animate-in delay-4">
+    <div class="cc-card" id="cc-section"></div>
+    <div style="margin-top: 0.85rem; padding: 0.75rem; background: var(--surface-alt); border-radius: var(--radius); font-size: 0.82rem; color: var(--text-muted); line-height: 1.65;" id="cc-summary"></div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section-label animate-in delay-4">Key dates</div>
+  <div class="card animate-in delay-4">
+    <div class="timeline-section" id="timeline"></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div id="verdict-container" class="animate-in delay-4"></div>
+
+  <div class="footer-note">
+    All tax estimates use flat 22% federal supplemental + 4.4% CO state + 6.2% SS + 1.45% Medicare.<br>
+    Edit any number above and the entire page recalculates instantly.
+  </div>
+
+</div>
+
+<script>
+const DEFAULT_EXPENSES = [
+  { name: "Mortgage", amount: 3133 },
+  { name: "Electric", amount: 120 },
+  { name: "Gas", amount: 80 },
+  { name: "Water", amount: 120 },
+  { name: "Car insurance", amount: 240 },
+  { name: "Car 1 payment", amount: 250 },
+  { name: "Car 2 (paid off Aug 2026)", amount: 567 },
+  { name: "HOA (monthly + quarterly)", amount: 116 },
+];
+
+let expenses = [...DEFAULT_EXPENSES];
+
+function fmt(v) {
+  const rounded = Math.round(v);
+  if (rounded < 0) return "-$" + Math.abs(rounded).toLocaleString();
+  return "$" + rounded.toLocaleString();
+}
+
+function renderExpenses() {
+  const grid = document.getElementById("expense-grid");
+  grid.innerHTML = "";
+  expenses.forEach((e, i) => {
+    const div = document.createElement("div");
+    div.className = "expense-row";
+    div.innerHTML = `
+      <span class="exp-name" title="${e.name}">${e.name}</span>
+      <div class="exp-input-wrap">
+        <span class="exp-dollar">$</span>
+        <input type="number" value="${e.amount}" onchange="updateExpense(${i}, this.value)">
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+function updateExpense(i, val) {
+  expenses[i].amount = parseFloat(val) || 0;
+  recalc();
+}
+
+function addExpense() {
+  const name = prompt("Expense name:");
+  if (!name) return;
+  const amount = parseFloat(prompt("Monthly amount ($):")) || 0;
+  expenses.push({ name, amount });
+  renderExpenses();
+  recalc();
+}
+
+function recalc() {
+  const salaryCurrent = parseFloat(document.getElementById("salary-current").value) || 93000;
+  const salaryNew = parseFloat(document.getElementById("salary-new").value) || 75000;
+  const wifeBiweekly = parseFloat(document.getElementById("wife-biweekly").value) || 1738;
+
+  const biweeklyCurrent = 2395;
+  const ratio = salaryNew / salaryCurrent;
+  const biweeklyNew = Math.round(biweeklyCurrent * ratio);
+
+  document.getElementById("take-home-current").textContent = "Bi-weekly: $" + biweeklyCurrent.toLocaleString();
+  document.getElementById("take-home-new").textContent = "Bi-weekly: ~$" + biweeklyNew.toLocaleString();
+  document.getElementById("wife-monthly").textContent = "Monthly: ~$" + Math.round(wifeBiweekly * (26/12)).toLocaleString();
+
+  const monthlyMultiplier = 26 / 12;
+  const monthlyCurrent = Math.round((biweeklyCurrent + wifeBiweekly) * monthlyMultiplier);
+  const monthlyNew = Math.round((biweeklyNew + wifeBiweekly) * monthlyMultiplier);
+
+  const totalExp = expenses.reduce((s, e) => s + e.amount, 0);
+  document.getElementById("total-expenses").textContent = fmt(totalExp);
+
+  const leftCurrent = monthlyCurrent - totalExp;
+  const leftNew = monthlyNew - totalExp;
+
+  const elLC = document.getElementById("leftover-current");
+  elLC.textContent = fmt(leftCurrent);
+  elLC.className = "comp-value " + (leftCurrent >= 0 ? "positive" : "negative");
+  document.getElementById("leftover-current-sub").textContent = "Combined monthly income: " + fmt(monthlyCurrent);
+
+  const elLN = document.getElementById("leftover-new");
+  elLN.textContent = fmt(leftNew);
+  elLN.className = "comp-value " + (leftNew >= 0 ? "positive" : "negative");
+  document.getElementById("leftover-new-sub").textContent = "Combined monthly income: " + fmt(monthlyNew);
+
+  // PTO + Bonus
+  const hourlyRate = salaryCurrent / 2080;
+  const ptoGross = hourlyRate * 120;
+  const bonusGross = 8000;
+  const taxRate = 0.22 + 0.044 + 0.062 + 0.0145;
+  const ptoNet = Math.round(ptoGross * (1 - taxRate));
+  const bonusNet = Math.round(bonusGross * (1 - taxRate));
+  const payoutTotal = ptoNet + bonusNet;
+
+  document.getElementById("pto-net").textContent = fmt(ptoNet);
+  document.getElementById("bonus-net").textContent = fmt(bonusNet);
+  document.getElementById("payout-total").textContent = fmt(payoutTotal);
+
+  // Credit cards
+  const cc1 = 8683;
+  const cc2 = 14500;
+  const cc2AfterPayout = Math.max(0, cc2 - payoutTotal);
+  const totalCCRemaining = cc1 + cc2AfterPayout;
+  const monthsUntilAPR = 20;
+  const monthlyPayoff = Math.round(totalCCRemaining / monthsUntilAPR);
+
+  const ccSection = document.getElementById("cc-section");
+  ccSection.innerHTML = `
+    <div class="cc-item">
+      <div class="cc-label">Card 1 balance</div>
+      <div class="cc-value">${fmt(cc1)}</div>
+      <div class="cc-sub">0% APR until Dec 2027</div>
+    </div>
+    <div class="cc-item">
+      <div class="cc-label">Card 2 after payout</div>
+      <div class="cc-value" style="color: var(--success);">${fmt(cc2AfterPayout)}</div>
+      <div class="cc-sub">Was ${fmt(cc2)} &mdash; payout applied</div>
+    </div>
+    <div class="cc-item">
+      <div class="cc-label">Total remaining CC debt</div>
+      <div class="cc-value">${fmt(totalCCRemaining)}</div>
+      <div class="cc-sub">${monthsUntilAPR} months until APR kicks in</div>
+    </div>
+    <div class="cc-item">
+      <div class="cc-label">Monthly to pay off in time</div>
+      <div class="cc-value">${fmt(monthlyPayoff)}</div>
+      <div class="cc-sub">Per month for ${monthsUntilAPR} months</div>
+    </div>
+  `;
+
+  const afterCCCurrent = leftCurrent - monthlyPayoff;
+  const afterCCNew = leftNew - monthlyPayoff;
+  const car2Payment = 567;
+  const postCarCurrent = leftCurrent + car2Payment;
+  const postCarNew = leftNew + car2Payment;
+  const postCarAfterCCNew = postCarNew - monthlyPayoff;
+
+  document.getElementById("cc-summary").innerHTML =
+    `After paying ${fmt(monthlyPayoff)}/mo toward cards: at $${(salaryCurrent/1000).toFixed(0)}k you'd have <strong>${fmt(afterCCCurrent)}</strong>/mo left for everything else. ` +
+    `At $${(salaryNew/1000).toFixed(0)}k you'd have <strong>${fmt(afterCCNew)}</strong>/mo. ` +
+    `After Car 2 is paid off (Aug 2026), the $${(salaryNew/1000).toFixed(0)}k scenario jumps to <strong>${fmt(postCarAfterCCNew)}</strong>/mo.`;
+
+  // Timeline
+  const timeline = document.getElementById("timeline");
+  timeline.innerHTML = `
+    <div class="timeline-item">
+      <div class="timeline-dot green"></div>
+      <div class="timeline-content">
+        <div class="tl-title">Now &mdash; PTO + bonus payout</div>
+        <div class="tl-desc">~${fmt(payoutTotal)} after tax applied to Card 2, reducing it from ${fmt(cc2)} to ${fmt(cc2AfterPayout)}</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot amber"></div>
+      <div class="timeline-content">
+        <div class="tl-title">August 2026 &mdash; Car 2 paid off</div>
+        <div class="tl-desc">Frees up ${fmt(car2Payment)}/mo. At $${(salaryNew/1000).toFixed(0)}k, leftover goes from ${fmt(leftNew)} to ${fmt(postCarNew)}/mo</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot ${totalCCRemaining > 0 ? 'red' : 'green'}"></div>
+      <div class="timeline-content">
+        <div class="tl-title">December 2027 &mdash; 0% APR ends</div>
+        <div class="tl-desc">Need ${fmt(totalCCRemaining)} paid off by then (${fmt(monthlyPayoff)}/mo for ${monthsUntilAPR} months)</div>
+      </div>
+    </div>
+  `;
+
+  // Verdict
+  const verdictContainer = document.getElementById("verdict-container");
+  let verdictClass, verdictTitle, verdictText;
+
+  if (leftNew >= 1500 && afterCCNew >= 300) {
+    verdictClass = "feasible";
+    verdictTitle = "Looks doable";
+    verdictText = `At $${(salaryNew/1000).toFixed(0)}k, you'd have ${fmt(leftNew)}/mo before discretionary spending. After CC payoff allocation, you'd still have ${fmt(afterCCNew)}/mo for groceries, gas, and savings. Once Car 2 drops off in August, it gets even more comfortable.`;
+  } else if (leftNew >= 500) {
+    verdictClass = "tight";
+    verdictTitle = "Tight but possible";
+    verdictText = `At $${(salaryNew/1000).toFixed(0)}k, you'd have ${fmt(leftNew)}/mo for everything beyond fixed bills. After setting aside ${fmt(monthlyPayoff)} for CC payoff, that leaves ${fmt(afterCCNew)}/mo for groceries, gas, and day-to-day life. It gets easier after Car 2 is paid off in August (${fmt(postCarNew)}/mo total leftover). Doable if you keep discretionary spending lean.`;
+  } else {
+    verdictClass = "risky";
+    verdictTitle = "Very tight — proceed with caution";
+    verdictText = `At $${(salaryNew/1000).toFixed(0)}k, the leftover after fixed expenses is only ${fmt(leftNew)}/mo. That has to cover groceries, gas, CC payoff, and everything else. It gets better after Car 2 is done in August, but the first few months would be extremely tight. Consider whether you can cut any expenses or if a salary between $${(salaryNew/1000).toFixed(0)}k and $${(salaryCurrent/1000).toFixed(0)}k is possible.`;
+  }
+
+  verdictContainer.innerHTML = `
+    <div class="verdict ${verdictClass}">
+      <div class="verdict-title">${verdictTitle}</div>
+      <div class="verdict-text">${verdictText}</div>
+    </div>
+  `;
+}
+
+renderExpenses();
+recalc();
+</script>
+
+</div><!-- end app-content -->
+
+</body>
+</html>
