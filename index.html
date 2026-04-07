@@ -29,9 +29,9 @@
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
     --shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
-
+ 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
+ 
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--bg);
@@ -39,7 +39,7 @@
     line-height: 1.6;
     min-height: 100vh;
   }
-
+ 
   .header {
     background: var(--accent-dark);
     color: white;
@@ -68,13 +68,13 @@
     opacity: 0.7;
     font-size: 0.9rem;
   }
-
+ 
   .container {
     max-width: 960px;
     margin: 0 auto;
     padding: 1.5rem 1.25rem 3rem;
   }
-
+ 
   .section-label {
     font-size: 0.7rem;
     font-weight: 600;
@@ -83,7 +83,7 @@
     color: var(--text-light);
     margin-bottom: 0.75rem;
   }
-
+ 
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -92,7 +92,7 @@
     box-shadow: var(--shadow-sm);
     margin-bottom: 1rem;
   }
-
+ 
   .salary-toggle {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -141,14 +141,86 @@
     color: var(--text-light);
     margin-top: 2px;
   }
-
+ 
+  /* Wife income section */
+  .wife-income-section {
+    margin-bottom: 1.5rem;
+  }
+  .wife-income-card {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+  }
+  .wife-income-card .label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .wife-inputs-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .wife-input-item {
+    position: relative;
+  }
+  .wife-input-item .wi-label {
+    font-size: 0.7rem;
+    color: var(--text-light);
+    margin-bottom: 2px;
+  }
+  .wife-input-item .wi-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: var(--surface-alt);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.65rem;
+    transition: outline 0.15s;
+  }
+  .wife-input-item .wi-input-wrap:focus-within {
+    outline: 2px solid var(--accent);
+  }
+  .wife-input-item .wi-input-wrap.is-driver {
+    background: var(--accent-light);
+    outline: 2px solid var(--accent);
+  }
+  .wife-input-item .wi-dollar {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .wife-input-item input {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    border: none;
+    background: transparent;
+    width: 100%;
+    outline: none;
+  }
+  .wife-input-item .wi-note {
+    font-size: 0.7rem;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+  .wife-derived-summary {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+  }
+ 
   .expense-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
   }
   @media (max-width: 600px) { .expense-grid { grid-template-columns: 1fr; } }
-
+ 
   .expense-row {
     display: flex;
     justify-content: space-between;
@@ -192,12 +264,19 @@
     background: rgba(255,255,255,0.7);
     border-radius: 4px;
   }
-  .expense-row.strikethrough .exp-name,
-  .expense-row.strikethrough input {
-    text-decoration: line-through;
-    opacity: 0.45;
+  .expense-row .remove-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 4px;
+    line-height: 1;
+    transition: color 0.15s;
   }
-
+  .expense-row .remove-btn:hover { color: var(--danger); }
+ 
+  /* Add expense inline form */
   .add-expense-btn {
     display: inline-flex;
     align-items: center;
@@ -214,7 +293,153 @@
     transition: background 0.15s;
   }
   .add-expense-btn:hover { background: var(--accent-light); }
-
+ 
+  .add-expense-form {
+    display: none;
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: var(--accent-light);
+    border-radius: var(--radius);
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+  .add-expense-form.visible {
+    display: flex;
+  }
+  .add-expense-form .field {
+    flex: 1;
+    min-width: 0;
+  }
+  .add-expense-form .field label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+  .add-expense-form .field input {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    background: var(--surface);
+    outline: none;
+  }
+  .add-expense-form .field input:focus {
+    border-color: var(--accent);
+  }
+  .add-expense-form .form-btns {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .add-expense-form .form-btns button {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.45rem 0.75rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .add-expense-form .form-btns .btn-add {
+    background: var(--accent);
+    color: white;
+  }
+  .add-expense-form .form-btns .btn-cancel {
+    background: var(--surface);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+ 
+  /* Credit card input rows */
+  .cc-input-row {
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr 0.8fr auto;
+    gap: 0.5rem;
+    align-items: end;
+    padding: 0.65rem 0.75rem;
+    background: var(--surface-alt);
+    border-radius: var(--radius);
+    margin-bottom: 0.5rem;
+  }
+  @media (max-width: 600px) {
+    .cc-input-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .cc-input-row .cc-field label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+  }
+  .cc-input-row .cc-field input {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 6px;
+    padding: 0.4rem 0.55rem;
+    outline: none;
+  }
+  .cc-input-row .cc-field input:focus {
+    border-color: var(--accent);
+  }
+  .cc-input-row .cc-field .input-with-dollar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0 0.55rem;
+  }
+  .cc-input-row .cc-field .input-with-dollar:focus-within {
+    border-color: var(--accent);
+  }
+  .cc-input-row .cc-field .input-with-dollar span {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .cc-input-row .cc-field .input-with-dollar input {
+    border: none;
+    padding: 0.4rem 0;
+    background: transparent;
+  }
+  .cc-input-row .cc-field .input-with-dollar input:focus {
+    border-color: transparent;
+  }
+  .cc-input-row .cc-remove {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0.4rem;
+    line-height: 1;
+    border-radius: 4px;
+    transition: color 0.15s;
+    align-self: end;
+    margin-bottom: 0.25rem;
+  }
+  .cc-input-row .cc-remove:hover { color: var(--danger); }
+  .cc-paid-note {
+    font-size: 0.72rem;
+    color: var(--success);
+    font-weight: 600;
+    margin-top: 1px;
+  }
+ 
   .total-bar {
     display: flex;
     justify-content: space-between;
@@ -227,7 +452,7 @@
     font-weight: 600;
     font-size: 0.95rem;
   }
-
+ 
   .comparison-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -261,7 +486,7 @@
   }
   .positive { color: var(--success); }
   .negative { color: var(--danger); }
-
+ 
   .timeline-section { margin-bottom: 1.5rem; }
   .timeline-item {
     display: flex;
@@ -289,7 +514,7 @@
     color: var(--text-muted);
     margin-top: 2px;
   }
-
+ 
   .payout-card {
     background: linear-gradient(135deg, var(--accent-dark), var(--accent));
     color: white;
@@ -319,7 +544,7 @@
     font-size: 1.2rem;
     font-weight: 700;
   }
-
+ 
   .cc-card {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -345,7 +570,7 @@
     color: var(--text-light);
     margin-top: 2px;
   }
-
+ 
   .verdict {
     border-radius: var(--radius-lg);
     padding: 1.25rem;
@@ -365,7 +590,7 @@
     color: var(--text-muted);
     line-height: 1.65;
   }
-
+ 
   .footer-note {
     font-size: 0.75rem;
     color: var(--text-light);
@@ -374,7 +599,7 @@
     padding-top: 1.5rem;
     border-top: 1px solid var(--border);
   }
-
+ 
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
@@ -384,7 +609,7 @@
   .delay-2 { animation-delay: 0.2s; }
   .delay-3 { animation-delay: 0.3s; }
   .delay-4 { animation-delay: 0.4s; }
-
+ 
   /* PIN Lock Screen */
   #pin-overlay {
     position: fixed;
@@ -483,12 +708,12 @@
     margin-top: 0.75rem;
     min-height: 1.2em;
   }
-
+ 
   .app-content.locked { display: none; }
 </style>
 </head>
 <body>
-
+ 
 <!-- PIN LOCK SCREEN -->
 <div id="pin-overlay">
   <div class="pin-box">
@@ -513,18 +738,18 @@
     <div class="pin-error-msg" id="pin-error"></div>
   </div>
 </div>
-
+ 
 <script>
 const _h="11dbdc87a2e692889b4a1c2d5f67e16938a8b3699345cfaa5a73f4d52ad25552";
 let _e="";
 const _dl=7;
-
+ 
 async function _sha(s){
   const d=new TextEncoder().encode(s);
   const h=await crypto.subtle.digest("SHA-256",d);
   return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,"0")).join("");
 }
-
+ 
 function _rd(){
   const c=document.getElementById("pin-dots");
   c.innerHTML="";
@@ -534,7 +759,7 @@ function _rd(){
     c.appendChild(d);
   }
 }
-
+ 
 function pinPress(n){
   if(_e.length>=_dl)return;
   _e+=n;
@@ -542,13 +767,13 @@ function pinPress(n){
   _rd();
   if(_e.length===_dl){setTimeout(_vs,200);}
 }
-
+ 
 function pinBackspace(){
   _e=_e.slice(0,-1);
   document.getElementById("pin-error").textContent="";
   _rd();
 }
-
+ 
 async function _vs(){
   const r=await _sha(_e);
   if(r===_h){
@@ -561,29 +786,29 @@ async function _vs(){
     setTimeout(()=>{_e="";_rd();},500);
   }
 }
-
+ 
 document.addEventListener("keydown",function(e){
   if(document.getElementById("pin-overlay").classList.contains("hidden"))return;
   if(e.key>="0"&&e.key<="9")pinPress(e.key);
   else if(e.key==="Backspace")pinBackspace();
   else if(e.key==="Enter")_vs();
 });
-
+ 
 _rd();
 </script>
-
+ 
 <!-- APP CONTENT (hidden until PIN entered) -->
 <div id="app-content" class="locked">
-
+ 
 <div class="header">
   <h1>Budget calculator</h1>
   <p>Salary comparison &mdash; $93k vs $75k</p>
 </div>
-
+ 
 <div class="container">
-
+ 
   <!-- SALARY INPUTS -->
-  <div class="section-label animate-in">Household income</div>
+  <div class="section-label animate-in">Your income</div>
   <div class="salary-toggle animate-in delay-1">
     <div class="salary-card">
       <div class="label">Your salary (current)</div>
@@ -602,28 +827,67 @@ _rd();
       <div class="take-home" id="take-home-new">Bi-weekly: ~$1,935</div>
     </div>
   </div>
-  <div class="salary-toggle animate-in delay-1" style="grid-template-columns: 1fr; max-width: 50%;">
-    <div class="salary-card">
-      <div class="label">Wife's bi-weekly take-home</div>
-      <div class="salary-input-row">
-        <span class="dollar">$</span>
-        <input type="number" id="wife-biweekly" value="1738" onchange="recalc()">
+ 
+  <!-- WIFE'S INCOME -->
+  <div class="section-label animate-in delay-1">Wife's income</div>
+  <div class="wife-income-section animate-in delay-1">
+    <div class="wife-income-card">
+      <div class="label">Edit any field &mdash; hourly &amp; salary estimate bi-weekly after taxes</div>
+      <div class="wife-inputs-row">
+        <div class="wife-input-item">
+          <div class="wi-label">Hourly rate</div>
+          <div class="wi-input-wrap" id="wife-hourly-wrap">
+            <span class="wi-dollar">$</span>
+            <input type="number" id="wife-hourly" step="0.01" value="" oninput="wifeFieldChanged('hourly')">
+          </div>
+          <div class="wi-note">80 hrs/pay period, ~34% tax est.</div>
+        </div>
+        <div class="wife-input-item">
+          <div class="wi-label">Bi-weekly take-home</div>
+          <div class="wi-input-wrap is-driver" id="wife-biweekly-wrap">
+            <span class="wi-dollar">$</span>
+            <input type="number" id="wife-biweekly" step="1" value="1738" oninput="wifeFieldChanged('biweekly')">
+          </div>
+          <div class="wi-note">Drives budget &mdash; override anytime</div>
+        </div>
+        <div class="wife-input-item">
+          <div class="wi-label">Annual salary</div>
+          <div class="wi-input-wrap" id="wife-salary-wrap">
+            <span class="wi-dollar">$</span>
+            <input type="number" id="wife-salary" step="1" value="" oninput="wifeFieldChanged('salary')">
+          </div>
+          <div class="wi-note">Gross pre-tax</div>
+        </div>
       </div>
-      <div class="take-home" id="wife-monthly"></div>
+      <div class="wife-derived-summary" id="wife-summary">Monthly take-home: ~$3,766</div>
     </div>
   </div>
-
+ 
   <!-- EXPENSES -->
   <div class="section-label animate-in delay-2">Monthly expenses</div>
   <div class="card animate-in delay-2">
     <div class="expense-grid" id="expense-grid"></div>
-    <button class="add-expense-btn" onclick="addExpense()">+ Add expense</button>
+    <button class="add-expense-btn" id="add-expense-toggle" onclick="showAddForm()">+ Add expense</button>
+    <div class="add-expense-form" id="add-expense-form">
+      <div class="field">
+        <label>Name</label>
+        <input type="text" id="new-expense-name" placeholder="e.g. Groceries">
+      </div>
+      <div class="field">
+        <label>Monthly ($)</label>
+        <input type="number" id="new-expense-amount" placeholder="0">
+      </div>
+      <div class="form-btns">
+        <button class="btn-add" onclick="confirmAddExpense()">Add</button>
+        <button class="btn-cancel" onclick="hideAddForm()">Cancel</button>
+      </div>
+    </div>
     <div class="total-bar">
       <span>Total monthly expenses</span>
       <span id="total-expenses">$0</span>
     </div>
   </div>
-
+ 
   <!-- COMPARISON -->
   <div class="section-label animate-in delay-3">Monthly leftover (income − expenses)</div>
   <div class="comparison-grid animate-in delay-3">
@@ -638,7 +902,7 @@ _rd();
       <div class="comp-sub" id="leftover-new-sub"></div>
     </div>
   </div>
-
+ 
   <!-- PTO + BONUS PAYOUT -->
   <div class="section-label animate-in delay-3">PTO + bonus payout</div>
   <div class="payout-card animate-in delay-3">
@@ -658,30 +922,32 @@ _rd();
       </div>
     </div>
   </div>
-
+ 
   <!-- CREDIT CARDS -->
   <div class="section-label animate-in delay-4">Credit card payoff plan</div>
   <div class="card animate-in delay-4">
+    <div id="cc-inputs"></div>
+    <button class="add-expense-btn" id="add-cc-toggle" onclick="addCreditCard()" style="margin-bottom: 0.75rem;">+ Add card</button>
     <div class="cc-card" id="cc-section"></div>
     <div style="margin-top: 0.85rem; padding: 0.75rem; background: var(--surface-alt); border-radius: var(--radius); font-size: 0.82rem; color: var(--text-muted); line-height: 1.65;" id="cc-summary"></div>
   </div>
-
+ 
   <!-- TIMELINE -->
   <div class="section-label animate-in delay-4">Key dates</div>
   <div class="card animate-in delay-4">
     <div class="timeline-section" id="timeline"></div>
   </div>
-
+ 
   <!-- VERDICT -->
   <div id="verdict-container" class="animate-in delay-4"></div>
-
+ 
   <div class="footer-note">
     All tax estimates use flat 22% federal supplemental + 4.4% CO state + 6.2% SS + 1.45% Medicare.<br>
     Edit any number above and the entire page recalculates instantly.
   </div>
-
+ 
 </div>
-
+ 
 <script>
 const DEFAULT_EXPENSES = [
   { name: "Mortgage", amount: 3133 },
@@ -693,15 +959,53 @@ const DEFAULT_EXPENSES = [
   { name: "Car 2 (paid off Aug 2026)", amount: 567 },
   { name: "HOA (monthly + quarterly)", amount: 116 },
 ];
-
+ 
 let expenses = [...DEFAULT_EXPENSES];
-
+ 
+const DEFAULT_CARDS = [
+  { name: "Card 1", balance: 8683, paid: 0 },
+  { name: "Card 2", balance: 14500, paid: 0 },
+];
+let creditCards = DEFAULT_CARDS.map(c => ({...c}));
+ 
 function fmt(v) {
   const rounded = Math.round(v);
   if (rounded < 0) return "-$" + Math.abs(rounded).toLocaleString();
   return "$" + rounded.toLocaleString();
 }
-
+ 
+/* ---- Wife income logic ---- */
+const WIFE_TAX_RATE = 0.22 + 0.044 + 0.062 + 0.0145; // ~34% for estimation
+ 
+function wifeFieldChanged(field) {
+  const hEl = document.getElementById('wife-hourly');
+  const bEl = document.getElementById('wife-biweekly');
+  const sEl = document.getElementById('wife-salary');
+ 
+  if (field === 'hourly') {
+    const hr = parseFloat(hEl.value) || 0;
+    const grossBiweekly = hr * 80;
+    const netBiweekly = Math.round(grossBiweekly * (1 - WIFE_TAX_RATE));
+    const annualGross = Math.round(grossBiweekly * 26);
+    bEl.value = netBiweekly > 0 ? netBiweekly : '';
+    sEl.value = annualGross > 0 ? annualGross : '';
+  } else if (field === 'salary') {
+    const sal = parseFloat(sEl.value) || 0;
+    const grossBiweekly = sal / 26;
+    const netBiweekly = Math.round(grossBiweekly * (1 - WIFE_TAX_RATE));
+    const hourly = grossBiweekly / 80;
+    bEl.value = netBiweekly > 0 ? netBiweekly : '';
+    hEl.value = hourly > 0 ? hourly.toFixed(2) : '';
+  }
+  // If field === 'biweekly', don't touch hourly/salary — let user keep their own values
+ 
+  const bw = parseFloat(bEl.value) || 0;
+  const monthly = Math.round(bw * (26 / 12));
+  document.getElementById('wife-summary').textContent = 'Monthly take-home: ~$' + monthly.toLocaleString();
+  recalc();
+}
+ 
+/* ---- Expenses ---- */
 function renderExpenses() {
   const grid = document.getElementById("expense-grid");
   grid.innerHTML = "";
@@ -709,6 +1013,7 @@ function renderExpenses() {
     const div = document.createElement("div");
     div.className = "expense-row";
     div.innerHTML = `
+      <button class="remove-btn" onclick="removeExpense(${i})" title="Remove">&times;</button>
       <span class="exp-name" title="${e.name}">${e.name}</span>
       <div class="exp-input-wrap">
         <span class="exp-dollar">$</span>
@@ -718,54 +1023,136 @@ function renderExpenses() {
     grid.appendChild(div);
   });
 }
-
+ 
 function updateExpense(i, val) {
   expenses[i].amount = parseFloat(val) || 0;
   recalc();
 }
-
-function addExpense() {
-  const name = prompt("Expense name:");
-  if (!name) return;
-  const amount = parseFloat(prompt("Monthly amount ($):")) || 0;
-  expenses.push({ name, amount });
+ 
+function removeExpense(i) {
+  expenses.splice(i, 1);
   renderExpenses();
   recalc();
 }
-
+ 
+function showAddForm() {
+  document.getElementById('add-expense-form').classList.add('visible');
+  document.getElementById('add-expense-toggle').style.display = 'none';
+  document.getElementById('new-expense-name').focus();
+}
+ 
+function hideAddForm() {
+  document.getElementById('add-expense-form').classList.remove('visible');
+  document.getElementById('add-expense-toggle').style.display = '';
+  document.getElementById('new-expense-name').value = '';
+  document.getElementById('new-expense-amount').value = '';
+}
+ 
+function confirmAddExpense() {
+  const name = document.getElementById('new-expense-name').value.trim();
+  const amount = parseFloat(document.getElementById('new-expense-amount').value) || 0;
+  if (!name) {
+    document.getElementById('new-expense-name').focus();
+    return;
+  }
+  expenses.push({ name, amount });
+  renderExpenses();
+  recalc();
+  hideAddForm();
+}
+ 
+// Allow enter key in the add form
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.getElementById('add-expense-form').classList.contains('visible')) {
+    confirmAddExpense();
+  }
+});
+ 
+/* ---- Credit Cards ---- */
+function renderCreditCards() {
+  const container = document.getElementById('cc-inputs');
+  container.innerHTML = '';
+  creditCards.forEach((c, i) => {
+    const remaining = Math.max(0, c.balance - c.paid);
+    const div = document.createElement('div');
+    div.className = 'cc-input-row';
+    div.innerHTML = `
+      <div class="cc-field">
+        <label>Card name</label>
+        <input type="text" value="${c.name}" onchange="updateCC(${i},'name',this.value)">
+      </div>
+      <div class="cc-field">
+        <label>Balance</label>
+        <div class="input-with-dollar">
+          <span>$</span>
+          <input type="number" value="${c.balance}" onchange="updateCC(${i},'balance',this.value)">
+        </div>
+      </div>
+      <div class="cc-field">
+        <label>Paid toward it</label>
+        <div class="input-with-dollar">
+          <span>$</span>
+          <input type="number" value="${c.paid}" onchange="updateCC(${i},'paid',this.value)">
+        </div>
+        ${c.paid > 0 ? '<div class="cc-paid-note">Remaining: $' + remaining.toLocaleString() + '</div>' : ''}
+      </div>
+      <button class="cc-remove" onclick="removeCreditCard(${i})" title="Remove">&times;</button>
+    `;
+    container.appendChild(div);
+  });
+}
+ 
+function updateCC(i, field, val) {
+  if (field === 'name') {
+    creditCards[i].name = val;
+  } else {
+    creditCards[i][field] = parseFloat(val) || 0;
+  }
+  recalc();
+}
+ 
+function addCreditCard() {
+  creditCards.push({ name: 'Card ' + (creditCards.length + 1), balance: 0, paid: 0 });
+  recalc();
+}
+ 
+function removeCreditCard(i) {
+  creditCards.splice(i, 1);
+  recalc();
+}
+ 
 function recalc() {
   const salaryCurrent = parseFloat(document.getElementById("salary-current").value) || 93000;
   const salaryNew = parseFloat(document.getElementById("salary-new").value) || 75000;
-  const wifeBiweekly = parseFloat(document.getElementById("wife-biweekly").value) || 1738;
-
+  const wifeBiweekly = parseFloat(document.getElementById("wife-biweekly").value) || 0;
+ 
   const biweeklyCurrent = 2395;
   const ratio = salaryNew / salaryCurrent;
   const biweeklyNew = Math.round(biweeklyCurrent * ratio);
-
+ 
   document.getElementById("take-home-current").textContent = "Bi-weekly: $" + biweeklyCurrent.toLocaleString();
   document.getElementById("take-home-new").textContent = "Bi-weekly: ~$" + biweeklyNew.toLocaleString();
-  document.getElementById("wife-monthly").textContent = "Monthly: ~$" + Math.round(wifeBiweekly * (26/12)).toLocaleString();
-
+ 
   const monthlyMultiplier = 26 / 12;
   const monthlyCurrent = Math.round((biweeklyCurrent + wifeBiweekly) * monthlyMultiplier);
   const monthlyNew = Math.round((biweeklyNew + wifeBiweekly) * monthlyMultiplier);
-
+ 
   const totalExp = expenses.reduce((s, e) => s + e.amount, 0);
   document.getElementById("total-expenses").textContent = fmt(totalExp);
-
+ 
   const leftCurrent = monthlyCurrent - totalExp;
   const leftNew = monthlyNew - totalExp;
-
+ 
   const elLC = document.getElementById("leftover-current");
   elLC.textContent = fmt(leftCurrent);
   elLC.className = "comp-value " + (leftCurrent >= 0 ? "positive" : "negative");
   document.getElementById("leftover-current-sub").textContent = "Combined monthly income: " + fmt(monthlyCurrent);
-
+ 
   const elLN = document.getElementById("leftover-new");
   elLN.textContent = fmt(leftNew);
   elLN.className = "comp-value " + (leftNew >= 0 ? "positive" : "negative");
   document.getElementById("leftover-new-sub").textContent = "Combined monthly income: " + fmt(monthlyNew);
-
+ 
   // PTO + Bonus
   const hourlyRate = salaryCurrent / 2080;
   const ptoGross = hourlyRate * 120;
@@ -774,35 +1161,36 @@ function recalc() {
   const ptoNet = Math.round(ptoGross * (1 - taxRate));
   const bonusNet = Math.round(bonusGross * (1 - taxRate));
   const payoutTotal = ptoNet + bonusNet;
-
+ 
   document.getElementById("pto-net").textContent = fmt(ptoNet);
   document.getElementById("bonus-net").textContent = fmt(bonusNet);
   document.getElementById("payout-total").textContent = fmt(payoutTotal);
-
-  // Credit cards
-  const cc1 = 8683;
-  const cc2 = 14500;
-  const cc2AfterPayout = Math.max(0, cc2 - payoutTotal);
-  const totalCCRemaining = cc1 + cc2AfterPayout;
+ 
+  // Credit cards — dynamic
+  renderCreditCards();
+  const totalOrigBalance = creditCards.reduce((s, c) => s + c.balance, 0);
+  const totalPaid = creditCards.reduce((s, c) => s + c.paid, 0);
+  const totalAfterPaid = Math.max(0, totalOrigBalance - totalPaid);
+  const totalAfterPayout = Math.max(0, totalAfterPaid - payoutTotal);
   const monthsUntilAPR = 20;
-  const monthlyPayoff = Math.round(totalCCRemaining / monthsUntilAPR);
-
+  const monthlyPayoff = totalAfterPayout > 0 ? Math.round(totalAfterPayout / monthsUntilAPR) : 0;
+ 
   const ccSection = document.getElementById("cc-section");
   ccSection.innerHTML = `
     <div class="cc-item">
-      <div class="cc-label">Card 1 balance</div>
-      <div class="cc-value">${fmt(cc1)}</div>
-      <div class="cc-sub">0% APR until Dec 2027</div>
+      <div class="cc-label">Total original balances</div>
+      <div class="cc-value">${fmt(totalOrigBalance)}</div>
+      <div class="cc-sub">${creditCards.length} card${creditCards.length !== 1 ? 's' : ''}</div>
     </div>
     <div class="cc-item">
-      <div class="cc-label">Card 2 after payout</div>
-      <div class="cc-value" style="color: var(--success);">${fmt(cc2AfterPayout)}</div>
-      <div class="cc-sub">Was ${fmt(cc2)} &mdash; payout applied</div>
+      <div class="cc-label">After payments made</div>
+      <div class="cc-value" style="color: ${totalPaid > 0 ? 'var(--success)' : 'var(--text)'};">${fmt(totalAfterPaid)}</div>
+      <div class="cc-sub">${fmt(totalPaid)} paid so far</div>
     </div>
     <div class="cc-item">
-      <div class="cc-label">Total remaining CC debt</div>
-      <div class="cc-value">${fmt(totalCCRemaining)}</div>
-      <div class="cc-sub">${monthsUntilAPR} months until APR kicks in</div>
+      <div class="cc-label">After PTO/bonus payout</div>
+      <div class="cc-value" style="color: var(--success);">${fmt(totalAfterPayout)}</div>
+      <div class="cc-sub">${fmt(payoutTotal)} payout applied</div>
     </div>
     <div class="cc-item">
       <div class="cc-label">Monthly to pay off in time</div>
@@ -810,19 +1198,19 @@ function recalc() {
       <div class="cc-sub">Per month for ${monthsUntilAPR} months</div>
     </div>
   `;
-
+ 
   const afterCCCurrent = leftCurrent - monthlyPayoff;
   const afterCCNew = leftNew - monthlyPayoff;
   const car2Payment = 567;
   const postCarCurrent = leftCurrent + car2Payment;
   const postCarNew = leftNew + car2Payment;
   const postCarAfterCCNew = postCarNew - monthlyPayoff;
-
+ 
   document.getElementById("cc-summary").innerHTML =
     `After paying ${fmt(monthlyPayoff)}/mo toward cards: at $${(salaryCurrent/1000).toFixed(0)}k you'd have <strong>${fmt(afterCCCurrent)}</strong>/mo left for everything else. ` +
     `At $${(salaryNew/1000).toFixed(0)}k you'd have <strong>${fmt(afterCCNew)}</strong>/mo. ` +
     `After Car 2 is paid off (Aug 2026), the $${(salaryNew/1000).toFixed(0)}k scenario jumps to <strong>${fmt(postCarAfterCCNew)}</strong>/mo.`;
-
+ 
   // Timeline
   const timeline = document.getElementById("timeline");
   timeline.innerHTML = `
@@ -830,7 +1218,7 @@ function recalc() {
       <div class="timeline-dot green"></div>
       <div class="timeline-content">
         <div class="tl-title">Now &mdash; PTO + bonus payout</div>
-        <div class="tl-desc">~${fmt(payoutTotal)} after tax applied to Card 2, reducing it from ${fmt(cc2)} to ${fmt(cc2AfterPayout)}</div>
+        <div class="tl-desc">~${fmt(payoutTotal)} after tax applied to CC debt, reducing remaining from ${fmt(totalAfterPaid)} to ${fmt(totalAfterPayout)}</div>
       </div>
     </div>
     <div class="timeline-item">
@@ -841,18 +1229,18 @@ function recalc() {
       </div>
     </div>
     <div class="timeline-item">
-      <div class="timeline-dot ${totalCCRemaining > 0 ? 'red' : 'green'}"></div>
+      <div class="timeline-dot ${totalAfterPayout > 0 ? 'red' : 'green'}"></div>
       <div class="timeline-content">
         <div class="tl-title">December 2027 &mdash; 0% APR ends</div>
-        <div class="tl-desc">Need ${fmt(totalCCRemaining)} paid off by then (${fmt(monthlyPayoff)}/mo for ${monthsUntilAPR} months)</div>
+        <div class="tl-desc">Need ${fmt(totalAfterPayout)} paid off by then (${fmt(monthlyPayoff)}/mo for ${monthsUntilAPR} months)</div>
       </div>
     </div>
   `;
-
+ 
   // Verdict
   const verdictContainer = document.getElementById("verdict-container");
   let verdictClass, verdictTitle, verdictText;
-
+ 
   if (leftNew >= 1500 && afterCCNew >= 300) {
     verdictClass = "feasible";
     verdictTitle = "Looks doable";
@@ -866,7 +1254,7 @@ function recalc() {
     verdictTitle = "Very tight — proceed with caution";
     verdictText = `At $${(salaryNew/1000).toFixed(0)}k, the leftover after fixed expenses is only ${fmt(leftNew)}/mo. That has to cover groceries, gas, CC payoff, and everything else. It gets better after Car 2 is done in August, but the first few months would be extremely tight. Consider whether you can cut any expenses or if a salary between $${(salaryNew/1000).toFixed(0)}k and $${(salaryCurrent/1000).toFixed(0)}k is possible.`;
   }
-
+ 
   verdictContainer.innerHTML = `
     <div class="verdict ${verdictClass}">
       <div class="verdict-title">${verdictTitle}</div>
@@ -874,12 +1262,14 @@ function recalc() {
     </div>
   `;
 }
-
+ 
 renderExpenses();
 recalc();
 </script>
-
+ 
 </div><!-- end app-content -->
-
+ 
+</body>
+</html>
 </body>
 </html>
